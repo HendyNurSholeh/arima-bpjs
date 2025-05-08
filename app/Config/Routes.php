@@ -5,6 +5,9 @@ use CodeIgniter\Router\RouteCollection;
 /**
  * @var RouteCollection $routes
  */
+$routes->get('/', function () {
+    return redirect()->to('/login');
+});
 $routes->get('/admin/dashboard', 'AdminController::dashboard');
 // dataset menu
 $routes->get('/admin/dataset', 'AdminController::dataset');

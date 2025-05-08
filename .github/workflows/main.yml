@@ -1,0 +1,82 @@
+#on:
+#  push:
+#    branches: [master]
+#
+#name: 🚀 Deploy CI4 Application
+#
+#jobs:
+#  web-deploy:
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      # Checkout code
+#      - name: Checkout code
+#        uses: actions/checkout@v2
+#
+#      # Install Composer dependencies
+#      - name: Install Composer dependencies
+#        run: composer install --no-dev
+#
+#      # Upload application files (excluding certain folders)
+#      - name: Upload application files
+#        env:
+#          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+#        run: |
+#          mkdir -p ~/.ssh
+#          echo "$DEPLOY_KEY" > ~/.ssh/id_rsa
+#          chmod 600 ~/.ssh/id_rsa
+#          ssh-keyscan -p 5451 hendy.my.id >> ~/.ssh/known_hosts
+#          scp -P 5451 -r \
+#            $(find . -type d \( -name .git -o -name .github -o -name public \) -prune -o -print) \
+#            cuannext@hendy.my.id:/home/cuannext/hendy.my.id/hackathon/
+#
+#      # Upload public files to public_html
+#      - name: Upload public files
+#        env:
+#          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+#        run: |
+#          mkdir -p ~/.ssh
+#          echo "$DEPLOY_KEY" > ~/.ssh/id_rsa
+#          chmod 600 ~/.ssh/id_rsa
+#          ssh-keyscan -p 5451 hendy.my.id >> ~/.ssh/known_hosts
+#          scp -P 5451 -r public/ cuannext@hendy.my.id:/home/cuannext/hendy.my.id/public_html/
+
+on:
+  push:
+    branches: [master]
+
+name: 🚀 Deploy CI4 Application
+
+jobs:
+  web-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install Composer dependencies
+        run: composer install --no-dev
+
+      - name: Sync  files
+        uses: burnett01/rsync-deployments@4.1
+        with:
+          # Menyinkronkan semua file kecuali .git, .github, dan folder public
+          switches: -avzr --delete --exclude=".git" --exclude=".github" --exclude="public/" --exclude=".env"
+          path: .
+          remote_path: /home/batuahcoba/domains/ujicoba.batuah.tech/coding-test
+          remote_host: ujicoba.batuah.tech
+          remote_user: batuahcoba
+          remote_key: ${{ secrets.DEPLOY_KEY }}
+
+      - name: Sync public files
+        uses: burnett01/rsync-deployments@4.1
+        with:
+          # Menyinkronkans folder dspublic tanpa .env
+          # switches: -avzr --delete --exclude=".env" --exclude="index.php" --exclude="cgi-bin/"
+          switches: -avzr --delete --exclude=".env" --exclude="index.php" --exclude="cgi-bin/" --exclude="assets/"
+          path: public/
+          remote_path: /home/batuahcoba/domains/ujicoba.batuah.tech/public_html/
+          remote_host: ujicoba.batuah.tech
+          remote_user: batuahcoba
+          remote_key: ${{ secrets.DEPLOY_KEY }}
