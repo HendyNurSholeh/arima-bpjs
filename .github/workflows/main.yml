@@ -28,7 +28,7 @@ jobs:
       - name: Sync public files
         uses: burnett01/rsync-deployments@4.1
         with:
-          switches: -avzr --delete --exclude=".env" --exclude="index.php" --exclude="cgi-bin/" --exclude="assets/"
+          switches: -avzr --delete --exclude=".env" --exclude="index.php" --exclude="cgi-bin/"
           path: public/
           remote_path: /home/batuahcoba/domains/ujicoba.batuah.tech/public_html/
           remote_host: ujicoba.batuah.tech
