@@ -19,6 +19,8 @@
 
     <!-- Custom styles for this template-->
     <link href="/assets2/css/sb-admin-2.min.css" rel="stylesheet">
+    
+    <link href="/assets2/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 
 </head>
 
@@ -44,7 +46,7 @@
             <!-- Nav Item - Dashboard -->
             <!-- Nav Item - Dashboard -->
             <li class="nav-item active">
-                <a class="nav-link" href="/dashboard">
+                <a class="nav-link" href="/admin/dashboard">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span>
                 </a>
@@ -58,7 +60,7 @@
                 Import Data
             </div>
             <li class="nav-item">
-                <a class="nav-link" href="/dataset">
+                <a class="nav-link" href="/admin/dataset">
                     <i class="fas fa-fw fa-database"></i>
                     <span>Dataset</span>
                 </a>
@@ -72,7 +74,7 @@
             </div>
             <!-- Nav Item - Prediksi -->
             <li class="nav-item">
-                <a class="nav-link" href="/prediksi">
+                <a class="nav-link" href="/admin/prediksi">
                     <i class="fas fa-fw fa-chart-line"></i>
                     <span>Prediksi</span>
                 </a>
@@ -80,7 +82,7 @@
 
             <!-- Nav Item - Performa -->
             <li class="nav-item">
-                <a class="nav-link" href="/performa">
+                <a class="nav-link" href="/admin/performa">
                     <i class="fas fa-fw fa-percentage"></i>
                     <span>Performa</span>
                 </a>
@@ -88,7 +90,7 @@
 
             <!-- Nav Item - Statistik -->
             <li class="nav-item">
-                <a class="nav-link" href="/statistik">
+                <a class="nav-link" href="/admin/statistik">
                     <i class="fas fa-fw fa-chart-bar"></i>
                     <span>Statistik</span>
                 </a>
@@ -102,7 +104,7 @@
             </div>
             <!-- Nav Item - Pengaturan Akun -->
             <li class="nav-item">
-                <a class="nav-link" href="/pengaturan">
+                <a class="nav-link" href="/admin/pengaturan">
                     <i class="fas fa-fw fa-cogs"></i>
                     <span>Pengaturan Akun</span>
                 </a>
@@ -110,7 +112,7 @@
 
             <!-- Nav Item - Logout -->
             <li class="nav-item">
-                <a class="nav-link" href="/logout">
+                <a class="nav-link" href="/admin/logout">
                     <i class="fas fa-fw fa-sign-out-alt"></i>
                     <span>Logout</span>
                 </a>
@@ -124,7 +126,75 @@
         </ul>
         <!-- End of Sidebar -->
 
-        <?= self::renderSection('content'); ?>
+        <div id="content-wrapper" class="d-flex flex-column">
+    
+    
+    <!-- Main Content -->
+    <div id="content">
+
+                <!-- Topbar -->
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+                    <!-- Sidebar Toggle (Topbar) -->
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                        <i class="fa fa-bars"></i>
+                    </button>
+
+                    <!-- Topbar Search -->
+                    <form
+                        class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                        <div class="input-group">
+                            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
+                                aria-label="Search" aria-describedby="basic-addon2">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="button">
+                                    <i class="fas fa-search fa-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <!-- Topbar Navbar -->
+                    <ul class="navbar-nav ml-auto">
+
+
+
+                        <div class="topbar-divider d-none d-sm-block"></div>
+
+                        <!-- Nav Item - User Information -->
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Admin</span>
+                                <img class="img-profile rounded-circle"
+                                    src="/assets2/img/undraw_profile.svg">
+                            </a>
+                        </li>
+
+                    </ul>
+
+                </nav>
+                <!-- End of Topbar -->
+
+                <!-- Begin Page Content -->
+                        <?= self::renderSection('content'); ?>
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Copyright &copy; Your Website 2021</span>
+                    </div>
+                </div>
+            </footer>
+            <!-- End of Footer -->
+
+        </div>
+
 
     </div>
     <!-- End of Page Wrapper -->
@@ -150,6 +220,12 @@
     <script src="/assets2/js/demo/chart-area-demo.js"></script>
     <script src="/assets2/js/demo/chart-pie-demo.js"></script>
 
+    <!-- Page level plugins -->
+    <script src="/assets2/vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="/assets2/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="/assets2/js/demo/datatables-demo.js"></script>
 </body>
 
 </html>
