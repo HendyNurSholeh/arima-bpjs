@@ -45,7 +45,7 @@
 
             <!-- Nav Item - Dashboard -->
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item active">
+        <li class="nav-item active">
                 <a class="nav-link" href="/admin/dashboard">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span>
@@ -59,7 +59,7 @@
             <div class="sidebar-heading">
                 Import Data
             </div>
-            <li class="nav-item">
+            <li class="nav-item active">
                 <a class="nav-link" href="/admin/dataset">
                     <i class="fas fa-fw fa-database"></i>
                     <span>Dataset</span>
@@ -73,7 +73,7 @@
                 Analisis
             </div>
             <!-- Nav Item - Prediksi -->
-            <li class="nav-item">
+            <li class="nav-item active">
                 <a class="nav-link" href="/admin/prediksi">
                     <i class="fas fa-fw fa-chart-line"></i>
                     <span>Prediksi</span>
@@ -81,7 +81,7 @@
             </li>
 
             <!-- Nav Item - Performa -->
-            <li class="nav-item">
+            <li class="nav-item active">
                 <a class="nav-link" href="/admin/performa">
                     <i class="fas fa-fw fa-percentage"></i>
                     <span>Performa</span>
@@ -89,7 +89,7 @@
             </li>
 
             <!-- Nav Item - Statistik -->
-            <li class="nav-item">
+            <li class="nav-item active">
                 <a class="nav-link" href="/admin/statistik">
                     <i class="fas fa-fw fa-chart-bar"></i>
                     <span>Statistik</span>
@@ -103,7 +103,7 @@
                 Pengaturan
             </div>
             <!-- Nav Item - Pengaturan Akun -->
-            <li class="nav-item">
+            <li class="nav-item active">
                 <a class="nav-link" href="/admin/pengaturan">
                     <i class="fas fa-fw fa-cogs"></i>
                     <span>Pengaturan Akun</span>
@@ -111,7 +111,7 @@
             </li>
 
             <!-- Nav Item - Logout -->
-            <li class="nav-item">
+            <li class="nav-item active">
                 <a class="nav-link" href="/admin/logout">
                     <i class="fas fa-fw fa-sign-out-alt"></i>
                     <span>Logout</span>
