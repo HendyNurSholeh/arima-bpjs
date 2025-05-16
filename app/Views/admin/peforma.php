@@ -4,7 +4,7 @@
     <h1 class="h3 mb-2 text-gray-800">Performance Model ARIMA</h1>
     <p class="mb-4">
         Berikut adalah evaluasi performa model ARIMA berdasarkan data aktual dan hasil prediksi.<br>
-        <strong>Proporsi Data:</strong> Training 80% &mdash; Testing 20%
+        <strong>Proporsi Data:</strong> Training 70% &mdash; Testing 30%
     </p>
 
     <!-- Ringkasan Akurasi -->

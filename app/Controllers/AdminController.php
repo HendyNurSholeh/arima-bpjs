@@ -157,7 +157,6 @@ class AdminController extends BaseController
             ];
         }
 
-
         return view('admin/peforma', [
             'summary' => $summary,
             'detail' => $detail,
@@ -176,6 +175,33 @@ class AdminController extends BaseController
         return view('admin/akun');
     }
 
+    public function reset_password()
+    {
+            $passwordBaru = $this->request->getPost('password_baru');
+            $passwordKonfirmasi = $this->request->getPost('password_konfirmasi');
+
+            if ($passwordBaru !== $passwordKonfirmasi) {
+                return redirect()->back()->with('error', 'Konfirmasi password tidak cocok.');
+            }
+
+            if (strlen($passwordBaru) < 6) {
+                return redirect()->back()->with('error', 'Password minimal 6 karakter.');
+            }
+
+            // Misal user admin hanya satu, update password di tabel users/admin
+            $userModel = new \App\Models\AkunModel();
+            $admin = $userModel->where('username', 'fadli')->first();
+
+            if (!$admin) {
+                return redirect()->back()->with('error', 'Akun admin tidak ditemukan.');
+            }
+
+            $userModel->update($admin['id_akun'], [
+                'password' => password_hash($passwordBaru, PASSWORD_DEFAULT)
+            ]);
+
+            return redirect()->back()->with('success', 'Password berhasil direset.');
+    }
 
     
 }
