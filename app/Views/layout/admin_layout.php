@@ -75,7 +75,7 @@
 
             <!-- Nav Item - Performa -->
             <li class="nav-item active">
-                <a class="nav-link" href="/admin/performa">
+                <a class="nav-link" href="/admin/peforma">
                     <i class="fas fa-fw fa-percentage"></i>
                     <span>Peformance ARIMA</span>
                 </a>
@@ -85,7 +85,7 @@
             <li class="nav-item active">
                 <a class="nav-link" href="/admin/prediksi">
                     <i class="fas fa-fw fa-chart-line"></i>
-                    <span>Hasil Prediksi</span>
+                    <span>Prediksi & Hasil</span>
                 </a>
             </li>
 

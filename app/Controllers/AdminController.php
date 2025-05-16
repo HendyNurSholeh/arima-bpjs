@@ -91,99 +91,78 @@ class AdminController extends BaseController
 
     public function peforma(): string
     {
-        $dataPercentage = $this->request->getGet('data_percentage') ?? 70;
-        $pasienModel = new PasienModel();
+        $datasetModel = new DatasetModel();
 
-        // Ambil semua data pasien
-        $data = $pasienModel
-        ->select('pasien.*, data_metabolik.*, data_fisik.*, status_hipertensi.*')
-        ->join('data_metabolik', 'data_metabolik.id_pasien = pasien.id_pasien')
-        ->join('data_fisik', 'data_fisik.id_pasien = pasien.id_pasien')
-        ->join('status_hipertensi', 'status_hipertensi.id_pasien = pasien.id_pasien')
-        ->findAll();
+        // Ambil data aktual (misal 10 data terakhir)
+        $dataAktual = $datasetModel
+            ->orderBy('tanggal', 'DESC')
+            ->findAll(10);
 
-        // Hitung jumlah data testing dan training
-        $totalData = count($data);
-        $testingDataCount = ($totalData * $dataPercentage) / 100;
-        $trainingDataCount = $totalData - $testingDataCount;
+        // Balik urutan agar tanggal lama ke baru
+        $dataAktual = array_reverse($dataAktual);
 
-        // Acak data
-        shuffle($data);
+        // Siapkan data untuk prediksi (misal gunakan ARIMA sederhana manual)
+        // Di sini, prediksi = rata-rata 3 data sebelumnya (moving average) sebagai contoh
+        $aktual = [];
+        $prediksi = [];
+        $tanggal = [];
+        $errors = [];
 
-        // Bagi data menjadi data training dan testing
-        $dataTesting = array_slice($data, 0, $testingDataCount);
-        $dataTraining = array_slice($data, $testingDataCount, $trainingDataCount);
-
-        // Implementasi algoritma Naive Bayes
-        $naiveBayes = new NaiveBayes();
-
-        // Prepare training data
-        $samples = [];
-        $labels = [];
-        foreach ($dataTraining as $item) {
-            $samples[] = [
-                $item['tekanan_darah'],
-                $item['gula_darah'],
-                $item['asam_urat'],
-                $item['kolesterol'],
-                $item['berat_badan'],
-                $item['tinggi_badan'],
-                $item['lingkar_perut']
-            ];
-            $labels[] = $item['status'];
-        }
-        $naiveBayes->train($samples, $labels);
-
-        // Evaluasi performa
-        $correct = 0;
-        $truePositive = $falsePositive = $trueNegative = $falseNegative = 0;
-        foreach ($dataTesting as $item) {
-            $predicted = $naiveBayes->predict([
-                $item['tekanan_darah'],
-                $item['gula_darah'],
-                $item['asam_urat'],
-                $item['kolesterol'],
-                $item['berat_badan'],
-                $item['tinggi_badan'],
-                $item['lingkar_perut']
-            ]);
-            if ($predicted == $item['status']) {
-                $correct++;
-                switch ($predicted) {
-                    case 'positive':
-                        $truePositive++;
-                        break;
-                    default:
-                        $trueNegative++;
-                        break;
-                }
+        foreach ($dataAktual as $i => $row) {
+            $aktual[] = (int)$row['jumlah_pendaftar'];
+            $tanggal[] = date('d/m/Y', strtotime($row['tanggal']));
+            if ($i < 3) {
+                // Untuk 3 data pertama, prediksi = aktual (atau null)
+                $prediksi[] = (int)$row['jumlah_pendaftar'];
             } else {
-                switch ($predicted) {
-                    case 'positive':
-                        $falsePositive++;
-                        break;
-                    default:
-                        $falseNegative++;
-                        break;
-                }
+                $pred = round((
+                    $dataAktual[$i-1]['jumlah_pendaftar'] +
+                    $dataAktual[$i-2]['jumlah_pendaftar'] +
+                    $dataAktual[$i-3]['jumlah_pendaftar']
+                ) / 3);
+                $prediksi[] = (int)$pred;
             }
+            $errors[] = abs($aktual[$i] - $prediksi[$i]);
         }
-        $accuracy = ($correct / count($dataTesting)) * 100;
-        $precision = ($truePositive + $falsePositive) ? ($truePositive / ($truePositive + $falsePositive)) * 100 : 0;
-        $recall = ($truePositive + $falseNegative) ? ($truePositive / ($truePositive + $falseNegative)) * 100 : 0;
-        $results = [
-            'accuracy' => $accuracy,
-            'precision' => $precision,
-            'recall' => $recall
+
+        // Hitung MAE, MSE, RMSE, MAPE
+        $n = count($aktual);
+        $mae = $mse = $mape = 0;
+        foreach ($aktual as $i => $val) {
+            $mae += abs($val - $prediksi[$i]);
+            $mse += pow($val - $prediksi[$i], 2);
+            $mape += $val != 0 ? abs(($val - $prediksi[$i]) / $val) : 0;
+        }
+        $mae = $n ? $mae / $n : 0;
+        $mse = $n ? $mse / $n : 0;
+        $rmse = sqrt($mse);
+        $mape = $n ? ($mape / $n) * 100 : 0;
+
+        // Siapkan data untuk view
+        $summary = [
+            'mae' => round($mae),
+            'mse' => round($mse),
+            'rmse' => round($rmse),
+            'mape' => round($mape, 2)
         ];
-        // dd($results);
+
+        $detail = [];
+        foreach ($dataAktual as $i => $row) {
+            $detail[] = [
+                'no' => $i + 1,
+                'tanggal' => $tanggal[$i],
+                'aktual' => number_format($aktual[$i], 0, ',', '.'),
+                'prediksi' => number_format($prediksi[$i], 0, ',', '.'),
+                'error' => number_format($errors[$i], 0, ',', '.')
+            ];
+        }
 
         return view('admin/peforma', [
-            'data' => $data,
-            'dataTesting' => $dataTesting,
-            'dataTraining' => $dataTraining,
-            'dataPercentage' => $dataPercentage,
-            'results' => $results,
+            'summary' => $summary,
+            'detail' => $detail,
+            'labels' => $tanggal,
+            'aktual' => $aktual,
+            'prediksi' => $prediksi
         ]);
     }
     public function prediksi(): string
