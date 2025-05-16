@@ -14,7 +14,7 @@
                             <div class="card-body p-3">
                                 <div class="row align-items-center">
                                     <div class="col-md-6 mb-2 mb-md-0 d-flex gap-2">
-                                        <a href="<?= base_url('admin/dataset/template'); ?>" class="btn btn-outline-secondary btn-sm mr-2">
+                                        <a href="<?= base_url('file/excel/format-import.xlsx'); ?>" class="btn btn-outline-secondary btn-sm mr-2">
                                             <i class="fas fa-download"></i> Download Template
                                         </a>
                                         <button class="btn btn-outline-info btn-sm" data-toggle="modal" data-target="#infoModal">
