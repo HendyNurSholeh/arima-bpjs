@@ -46,8 +46,7 @@ class AdminController extends BaseController
             $spreadsheet = IOFactory::load($filePath);
             $data = $spreadsheet->getActiveSheet()->toArray();
 
-            // Remove the header row
-            array_shift($data);
+            // Remove the header row(s)
             array_shift($data);
 
             // Filter out empty rows
@@ -55,70 +54,38 @@ class AdminController extends BaseController
                 return array_filter($row);
             });
 
-            // Prepare data for batch insert
-            $pasienData = [];
-            $dataMetabolikData = [];
-            $dataFisikData = [];
-            $statusHipertensiData = [];
-
+            // Prepare data for batch insert to dataset table
+            $datasetData = [];
             foreach ($data as $row) {
-                $pasienData[] = [
-                    'nama' => $row[1],
-                    'umur' => $row[2],
+                // Ubah format tanggal dari d/m/Y ke Y-m-d
+                $tanggal = \DateTime::createFromFormat('d/m/Y', $row[1]);
+                $formattedTanggal = $tanggal ? $tanggal->format('Y-m-d') : null;
+
+                $datasetData[] = [
+                    'tanggal' => $formattedTanggal,
+                    'jumlah_pendaftar' => $row[2],
+                    'bulan' => $row[3],
                 ];
             }
-            // Insert data into the database using batch insert within a transaction
+
             $db = Database::connect();
-            $pasienModel = new PasienModel();
-            $dataMetabolikModel = new DataMetabolitikModel();
-            $dataFisikModel = new DataFisikModel();
-            $statusHipertensiModel = new StatusHipertensiModel();
+            $datasetModel = new \App\Models\DatasetModel();
 
-            // Disable foreign key checks
+            // Disable foreign key checks if needed
             $db->disableForeignKeyChecks();
-
-            // Truncate existing data
-            $pasienModel->truncate();
-            $dataMetabolikModel->truncate();
-            $dataFisikModel->truncate();
-            $statusHipertensiModel->truncate();
 
             // Enable foreign key checks
             $db->enableForeignKeyChecks();
 
-            // Insert new data and get inserted IDs
-            $pasienModel->insertBatch($pasienData);
-            $insertedIds = $pasienModel->insertID();
-            foreach ($data as $index => $row) {
-                $id_pasien = $index + 1;
-                $dataMetabolikData[] = [
-                    'id_pasien' => $id_pasien,
-                    'tekanan_darah' => $row[3],
-                    'gula_darah' => $row[4],
-                    'asam_urat' => str_replace(',', '.', $row[5]), // Convert comma to dot
-                    'kolesterol' => $row[6],
-                ];
-                $dataFisikData[] = [
-                    'id_pasien' => $id_pasien,
-                    'berat_badan' => str_replace(',', '.', $row[7]), // Convert comma to dot
-                    'tinggi_badan' => $row[8],
-                    'lingkar_perut' => $row[9],
-                ];
-                $statusHipertensiData[] = [
-                    'id_pasien' => $id_pasien,
-                    'status' => $row[10],
-                ];
+            // Insert new data
+            if (!empty($datasetData)) {
+                $datasetModel->insertBatch($datasetData);
             }
 
-            // Insert new data
-            $dataMetabolikModel->insertBatch($dataMetabolikData);
-            $dataFisikModel->insertBatch($dataFisikData);
-            $statusHipertensiModel->insertBatch($statusHipertensiData);
-
-            return redirect()->to('/admin/dataset')->with('message', 'File imported and data saved to database successfully.');
+            return redirect()->to('/admin/dataset')->with('success', 'File berhasil diimpor dan data berhasil disimpan ke database.');
         }
 
-        return redirect()->to('/admin/dataset')->with('error', 'Failed to import file.');
+        return redirect()->to('/admin/dataset')->with('error', 'Gagal mengimpor file.');
     }
     public function peforma(): string
     {

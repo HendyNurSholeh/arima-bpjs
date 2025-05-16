@@ -25,7 +25,7 @@
                                         <form action="<?= base_url('admin/dataset/import'); ?>" method="post" enctype="multipart/form-data" class="form-inline d-flex justify-content-end">
                                         <div class="d-flex align-items-center">
                                                 <div class="custom-file mr-2">
-                                                    <input type="file" name="dataset_file" accept=".csv, application/vnd.ms-excel" required class="custom-file-input" id="datasetFileInput">
+                                                    <input type="file" name="file" accept=".xlsx, application/vnd.ms-excel" required class="custom-file-input" id="datasetFileInput">
                                                     <label class="custom-file-label" for="datasetFileInput">Pilih file...</label>
                                                 </div>
                                                 <button type="submit" class="btn btn-primary btn-sm ml-2">
