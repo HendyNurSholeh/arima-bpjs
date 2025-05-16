@@ -66,14 +66,26 @@
                                     <thead>
                                         <tr>
                                             <th>No</th>
-                                            <th>Tahun</th>
+                                            <th>Tangggal</th>
                                             <th>Bulan</th>
-                                            <th>Jumlah Peserta</th>
-                                            <th>Aksi</th>
+                                            <th>Jumlah Pendaftar</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <!-- Data akan diisi dari controller -->
+                                        <?php if (!empty($dataset) && is_array($dataset)): ?>
+                                            <?php $no = 1; foreach ($dataset as $row): ?>
+                                                <tr>
+                                                    <td><?= $no++; ?></td>
+                                                    <td><?= esc($row['tanggal']); ?></td>
+                                                    <td><?= esc($row['bulan']); ?></td>
+                                                    <td><?= number_format($row['jumlah_pendaftar']); ?></td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        <?php else: ?>
+                                            <tr>
+                                                <td colspan="5" class="text-center text-muted">Belum ada data.</td>
+                                            </tr>
+                                        <?php endif; ?>
                                     </tbody>
                                 </table>
                             </div>

@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\DataFisikModel;
 use App\Models\DataMetabolitikModel;
+use App\Models\DatasetModel;
 use App\Models\PasienModel;
 use App\Models\StatusHipertensiModel;
 use Config\Database;
@@ -19,19 +20,11 @@ class AdminController extends BaseController
     
     public function dataset(): string
     {
-        $pasienModel = new PasienModel();
-        $dataMetabolikModel = new DataMetabolitikModel();
-        $dataFisikModel = new DataFisikModel();
-        $statusHipertensiModel = new StatusHipertensiModel();
+        $datasetModel = new DatasetModel();
 
-        $data = $pasienModel
-            ->select('pasien.*, data_metabolik.*, data_fisik.*, status_hipertensi.*')
-            ->join('data_metabolik', 'data_metabolik.id_pasien = pasien.id_pasien')
-            ->join('data_fisik', 'data_fisik.id_pasien = pasien.id_pasien')
-            ->join('status_hipertensi', 'status_hipertensi.id_pasien = pasien.id_pasien')
-            ->findAll();
+        $data = $datasetModel->findAll();
 
-        return view('admin/dataset', ['data' => $data]);
+        return view('admin/dataset', ['dataset' => $data]);
     }
    
     public function import()
