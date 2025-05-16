@@ -97,7 +97,7 @@
             </div>
             <!-- Nav Item - Pengaturan Akun -->
             <li class="nav-item active">
-                <a class="nav-link" href="/admin/pengaturan">
+                <a class="nav-link" href="/admin/akun">
                     <i class="fas fa-fw fa-cogs"></i>
                     <span>Pengaturan Akun</span>
                 </a>
@@ -105,7 +105,7 @@
 
             <!-- Nav Item - Logout -->
             <li class="nav-item active">
-                <a class="nav-link" href="/admin/logout">
+                <a class="nav-link" href="/logout">
                     <i class="fas fa-fw fa-sign-out-alt"></i>
                     <span>Logout</span>
                 </a>

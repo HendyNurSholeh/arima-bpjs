@@ -157,6 +157,7 @@ class AdminController extends BaseController
             ];
         }
 
+
         return view('admin/peforma', [
             'summary' => $summary,
             'detail' => $detail,
@@ -169,4 +170,12 @@ class AdminController extends BaseController
     {
         return view('admin/prediksi');
     }
+
+    public function akun(): string
+    {
+        return view('admin/akun');
+    }
+
+
+    
 }

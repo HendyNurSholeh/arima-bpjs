@@ -17,6 +17,7 @@ $routes->get('/admin/dataset/clear', 'AdminController::clear');
 $routes->get('/admin/peforma', 'AdminController::peforma');
 $routes->get('/admin/peforma/uji-akurasi', 'AdminController::ujiAkurasi');
 $routes->get('/admin/prediksi', 'AdminController::prediksi');
+$routes->get('/admin/akun', 'AdminController::akun');
 $routes->get('/logout', 'LoginController::logout');
 $routes->get('/login', 'LoginController::login');
 $routes->post('/login', 'LoginController::postLogin');
