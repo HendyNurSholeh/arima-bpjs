@@ -1,6 +1,6 @@
 on:
   push:
-    branches: [master]
+    branches: [production]
 
 name: 🚀 Deploy CI4 Application
 

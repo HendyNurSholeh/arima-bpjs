@@ -31,7 +31,7 @@ class LoginController extends BaseController
 
         // Cari user berdasarkan username
         $account = $accountModel->getAccountByUsername($username);
-
+        
         // Jika user ditemukan dan password cocok
         if ($account && password_verify($password, $account['password'])) {
             $session->set('is_login', true);
