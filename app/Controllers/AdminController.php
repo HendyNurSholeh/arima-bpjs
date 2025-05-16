@@ -49,15 +49,49 @@ class AdminController extends BaseController
 
             // Prepare data for batch insert to dataset table
             $datasetData = [];
+            // Ambil semua tanggal dari data Excel
+            $tanggalList = [];
             foreach ($data as $row) {
-                // Ubah format tanggal dari d/m/Y ke Y-m-d
+                $tanggal = \DateTime::createFromFormat('d/m/Y', $row[1]);
+                if ($tanggal) {
+                    $tanggalList[] = $tanggal->format('Y-m-d');
+                }
+            }
+
+            // Cari rentang tanggal minimum dan maksimum
+            $minTanggal = min($tanggalList);
+            $maxTanggal = max($tanggalList);
+
+            // Buat array semua tanggal dari min ke max
+            $allDates = [];
+            $start = new \DateTime($minTanggal);
+            $end = new \DateTime($maxTanggal);
+            while ($start <= $end) {
+                $allDates[] = $start->format('Y-m-d');
+                $start->modify('+1 day');
+            }
+
+            // Index data Excel berdasarkan tanggal
+            $excelDataByDate = [];
+            foreach ($data as $row) {
                 $tanggal = \DateTime::createFromFormat('d/m/Y', $row[1]);
                 $formattedTanggal = $tanggal ? $tanggal->format('Y-m-d') : null;
+                if ($formattedTanggal) {
+                    $excelDataByDate[$formattedTanggal] = [
+                        'jumlah_pendaftar' => $row[2],
+                        'bulan' => $row[3],
+                    ];
+                }
+            }
 
+            // Susun datasetData, isi 0 jika tanggal tidak ada di Excel
+            foreach ($allDates as $tgl) {
+                $jumlah = isset($excelDataByDate[$tgl]) ? $excelDataByDate[$tgl]['jumlah_pendaftar'] : 0;
+                $bulan = isset($excelDataByDate[$tgl]) ? $excelDataByDate[$tgl]['bulan'] : date('F', strtotime($tgl));
                 $datasetData[] = [
-                    'tanggal' => $formattedTanggal,
-                    'jumlah_pendaftar' => $row[2],
-                    'bulan' => $row[3],
+                    'tanggal' => $tgl,
+                    'jumlah_pendaftar' => $jumlah,
+                    'bulan' => $bulan,
                 ];
             }
 
@@ -165,9 +199,112 @@ class AdminController extends BaseController
             'prediksi' => $prediksi
         ]);
     }
+    // Prediksi manual moving average per tanggal, tanpa library eksternal
     public function prediksi(): string
     {
-        return view('admin/prediksi');
+        $datasetModel = new DatasetModel();
+
+        $prediksiData = [];
+        $summary = [
+            'total' => 0,
+            'avg' => 0,
+            'min' => 0,
+            'max' => 0
+        ];
+        $labels = [];
+        $jumlahPrediksi = [];
+
+        if ($this->request->getGet('tanggal_mulai') && $this->request->getGet('tanggal_akhir')) {
+            $tanggalMulai = $this->request->getGet('tanggal_mulai');
+            $tanggalAkhir = $this->request->getGet('tanggal_akhir');
+
+            // Ambil data historis sampai tanggal terakhir sebelum tanggal mulai prediksi
+            $historis = $datasetModel
+                ->where('tanggal <', $tanggalMulai)
+                ->orderBy('tanggal', 'ASC')
+                ->findAll();
+
+            // Buat periode tanggal prediksi
+            $period = [];
+            $start = new \DateTime($tanggalMulai);
+            $end = new \DateTime($tanggalAkhir);
+            while ($start <= $end) {
+                $period[] = clone $start;
+                $start->modify('+1 day');
+            }
+
+            // Siapkan data historis untuk moving average (hanya jumlah_pendaftar)
+            $series = [];
+            foreach ($historis as $row) {
+                $series[] = (int)$row['jumlah_pendaftar'];
+            }
+
+            // Prediksi manual moving average (window 3 hari)
+            $window = 3;
+            $prediksi = [];
+            $seriesPrediksi = $series; // Copy data historis untuk menambah prediksi ke belakang
+
+            // Pastikan data historis tidak kosong, jika kosong isi dengan 0 agar prediksi tidak selalu 0
+            if (empty($seriesPrediksi)) {
+                $seriesPrediksi = [0, 0, 0];
+            }
+
+            foreach ($period as $i => $dt) {
+                $countSeries = count($seriesPrediksi);
+                if ($countSeries >= $window) {
+                    // Ambil rata-rata window terakhir
+                    $sum = 0;
+                    for ($j = $countSeries - $window; $j < $countSeries; $j++) {
+                        $sum += $seriesPrediksi[$j];
+                    }
+                    $avg = round($sum / $window);
+                } elseif ($countSeries > 0) {
+                    // Jika data kurang dari window, rata-rata seluruh data
+                    $avg = round(array_sum($seriesPrediksi) / $countSeries);
+                } else {
+                    $avg = 0;
+                }
+                $prediksi[] = $avg;
+                $seriesPrediksi[] = $avg; // Tambahkan hasil prediksi ke deret untuk prediksi berikutnya
+            }
+
+            // Siapkan data untuk tabel dan chart
+            $prediksiData = [];
+            $total = 0;
+            $min = null;
+            $max = null;
+            foreach ($period as $i => $dt) {
+                $tgl = $dt->format('d/m/Y');
+                $bulan = $dt->format('F');
+                $jumlah = $prediksi[$i] ?? 0;
+                $prediksiData[] = [
+                    'no' => $i+1,
+                    'tanggal' => $tgl,
+                    'bulan' => $bulan,
+                    'jumlah' => number_format($jumlah, 0, ',', '.')
+                ];
+                $labels[] = $tgl;
+                $jumlahPrediksi[] = $jumlah;
+                $total += $jumlah;
+                $min = $min === null ? $jumlah : min($min, $jumlah);
+                $max = $max === null ? $jumlah : max($max, $jumlah);
+            }
+            $avg = count($jumlahPrediksi) ? $total / count($jumlahPrediksi) : 0;
+
+            $summary = [
+                'total' => number_format($total, 0, ',', '.'),
+                'avg' => number_format($avg, 0, ',', '.'),
+                'min' => number_format($min, 0, ',', '.'),
+                'max' => number_format($max, 0, ',', '.')
+            ];
+        }
+
+        return view('admin/prediksi', [
+            'prediksiData' => $prediksiData,
+            'summary' => $summary,
+            'labels' => $labels,
+            'jumlahPrediksi' => $jumlahPrediksi
+        ]);
     }
 
     public function akun(): string
@@ -177,30 +314,30 @@ class AdminController extends BaseController
 
     public function reset_password()
     {
-            $passwordBaru = $this->request->getPost('password_baru');
-            $passwordKonfirmasi = $this->request->getPost('password_konfirmasi');
+        $passwordBaru = $this->request->getPost('password_baru');
+        $passwordKonfirmasi = $this->request->getPost('password_konfirmasi');
+    
+        if ($passwordBaru !== $passwordKonfirmasi) {
+            return redirect()->back()->with('error', 'Konfirmasi password tidak cocok.');
+        }
+    
+        if (strlen($passwordBaru) < 6) {
+            return redirect()->back()->with('error', 'Password minimal 6 karakter.');
+        }
+    
+        // Misal user admin hanya satu, update password di tabel users/admin
+        $userModel = new \App\Models\AkunModel();
+        $admin = $userModel->where('username', 'fadli')->first();
+    
+        if (!$admin) {
+            return redirect()->back()->with('error', 'Akun admin tidak ditemukan.');
+        }
+    
+        $userModel->update($admin['id_akun'], [
+            'password' => password_hash($passwordBaru, PASSWORD_DEFAULT)
+        ]);
 
-            if ($passwordBaru !== $passwordKonfirmasi) {
-                return redirect()->back()->with('error', 'Konfirmasi password tidak cocok.');
-            }
-
-            if (strlen($passwordBaru) < 6) {
-                return redirect()->back()->with('error', 'Password minimal 6 karakter.');
-            }
-
-            // Misal user admin hanya satu, update password di tabel users/admin
-            $userModel = new \App\Models\AkunModel();
-            $admin = $userModel->where('username', 'fadli')->first();
-
-            if (!$admin) {
-                return redirect()->back()->with('error', 'Akun admin tidak ditemukan.');
-            }
-
-            $userModel->update($admin['id_akun'], [
-                'password' => password_hash($passwordBaru, PASSWORD_DEFAULT)
-            ]);
-
-            return redirect()->back()->with('success', 'Password berhasil direset.');
+        return redirect()->back()->with('success', 'Password berhasil direset.');
     }
 
     
