@@ -42,32 +42,80 @@
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
+            <!-- Nav Item - Dashboard -->
             <li class="nav-item active">
-                <a class="nav-link" href="index.html">
+                <a class="nav-link" href="/dashboard">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Dashboard</span></a>
+                    <span>Dashboard</span>
+                </a>
             </li>
 
             <!-- Divider -->
             <hr class="sidebar-divider">
 
-            <!-- Heading -->
+            <!-- Nav Item - Dataset -->
             <div class="sidebar-heading">
-                Addons
+                Import Data
             </div>
-            <!-- Nav Item - Charts -->
             <li class="nav-item">
-                <a class="nav-link" href="charts.html">
-                    <i class="fas fa-fw fa-chart-area"></i>
-                    <span>Charts</span></a>
+                <a class="nav-link" href="/dataset">
+                    <i class="fas fa-fw fa-database"></i>
+                    <span>Dataset</span>
+                </a>
             </li>
 
-            <!-- Nav Item - Tables -->
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <div class="sidebar-heading">
+                Analisis
+            </div>
+            <!-- Nav Item - Prediksi -->
             <li class="nav-item">
-                <a class="nav-link" href="tables.html">
-                    <i class="fas fa-fw fa-table"></i>
-                    <span>Tables</span></a>
+                <a class="nav-link" href="/prediksi">
+                    <i class="fas fa-fw fa-chart-line"></i>
+                    <span>Prediksi</span>
+                </a>
             </li>
+
+            <!-- Nav Item - Performa -->
+            <li class="nav-item">
+                <a class="nav-link" href="/performa">
+                    <i class="fas fa-fw fa-percentage"></i>
+                    <span>Performa</span>
+                </a>
+            </li>
+
+            <!-- Nav Item - Statistik -->
+            <li class="nav-item">
+                <a class="nav-link" href="/statistik">
+                    <i class="fas fa-fw fa-chart-bar"></i>
+                    <span>Statistik</span>
+                </a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <div class="sidebar-heading">
+                Pengaturan
+            </div>
+            <!-- Nav Item - Pengaturan Akun -->
+            <li class="nav-item">
+                <a class="nav-link" href="/pengaturan">
+                    <i class="fas fa-fw fa-cogs"></i>
+                    <span>Pengaturan Akun</span>
+                </a>
+            </li>
+
+            <!-- Nav Item - Logout -->
+            <li class="nav-item">
+                <a class="nav-link" href="/logout">
+                    <i class="fas fa-fw fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </li>
+
 
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
@@ -93,14 +141,14 @@
     <script src="/assets2/vendor/jquery-easing/jquery.easing.min.js"></script>
 
     <!-- Custom scripts for all pages-->
-    <script src="js/sb-admin-2.min.js"></script>
+    <script src="/assets2/js/sb-admin-2.min.js"></script>
 
     <!-- Page level plugins -->
     <script src="/assets2/vendor/chart.js/Chart.min.js"></script>
 
     <!-- Page level custom scripts -->
-    <script src="js/demo/chart-area-demo.js"></script>
-    <script src="js/demo/chart-pie-demo.js"></script>
+    <script src="/assets2/js/demo/chart-area-demo.js"></script>
+    <script src="/assets2/js/demo/chart-pie-demo.js"></script>
 
 </body>
 
