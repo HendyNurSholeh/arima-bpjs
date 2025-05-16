@@ -70,16 +70,6 @@
         </div>
     </div>
 
-    <!-- Grafik Tren Prediksi -->
-    <div class="card mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Grafik Tren Prediksi</h6>
-        </div>
-        <div class="card-body">
-            <canvas id="chartPrediksi" height="100"></canvas>
-        </div>
-    </div>
-
     <!-- Data Table -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
@@ -130,6 +120,16 @@
                     </tbody>
                 </table>
             </div>
+        </div>
+    </div>
+
+    <!-- Grafik Tren Prediksi -->
+    <div class="card mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Grafik Tren Prediksi</h6>
+        </div>
+        <div class="card-body">
+            <canvas id="chartPrediksi" height="100"></canvas>
         </div>
     </div>
 
