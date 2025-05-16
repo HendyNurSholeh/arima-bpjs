@@ -72,27 +72,20 @@
             <div class="sidebar-heading">
                 Analisis
             </div>
-            <!-- Nav Item - Prediksi -->
-            <li class="nav-item active">
-                <a class="nav-link" href="/admin/prediksi">
-                    <i class="fas fa-fw fa-chart-line"></i>
-                    <span>Prediksi</span>
-                </a>
-            </li>
 
             <!-- Nav Item - Performa -->
             <li class="nav-item active">
                 <a class="nav-link" href="/admin/performa">
                     <i class="fas fa-fw fa-percentage"></i>
-                    <span>Performa</span>
+                    <span>Peformance ARIMA</span>
                 </a>
             </li>
-
-            <!-- Nav Item - Statistik -->
+            
+            <!-- Nav Item - Prediksi -->
             <li class="nav-item active">
-                <a class="nav-link" href="/admin/statistik">
-                    <i class="fas fa-fw fa-chart-bar"></i>
-                    <span>Statistik</span>
+                <a class="nav-link" href="/admin/prediksi">
+                    <i class="fas fa-fw fa-chart-line"></i>
+                    <span>Hasil Prediksi</span>
                 </a>
             </li>
 
