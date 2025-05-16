@@ -80,6 +80,15 @@ class AdminController extends BaseController
 
         return redirect()->to('/admin/dataset')->with('error', 'Gagal mengimpor file.');
     }
+
+    public function clear()
+    {
+        $datasetModel = new DatasetModel();
+        $datasetModel->truncate();
+
+        return redirect()->to('/admin/dataset')->with('success', 'Semua data berhasil dihapus.');
+    }
+
     public function peforma(): string
     {
         $dataPercentage = $this->request->getGet('data_percentage') ?? 70;

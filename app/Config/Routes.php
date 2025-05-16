@@ -12,6 +12,7 @@ $routes->get('/admin/dashboard', 'AdminController::dashboard');
 // dataset menu
 $routes->get('/admin/dataset', 'AdminController::dataset');
 $routes->post('/admin/dataset/import', 'AdminController::import');
+$routes->get('/admin/dataset/clear', 'AdminController::clear');
 
 $routes->get('/admin/peforma', 'AdminController::peforma');
 $routes->get('/admin/peforma/uji-akurasi', 'AdminController::ujiAkurasi');
