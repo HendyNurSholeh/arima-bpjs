@@ -19,6 +19,7 @@
 
     <!-- Custom styles for this template-->
     <link href="/assets2/css/sb-admin-2.min.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/assets/images/bpjs-icon.png">
     
     <link href="/assets2/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 
